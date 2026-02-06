@@ -3,6 +3,7 @@ package com.nptechon.smartamp.tcp.server;
 import com.nptechon.smartamp.global.config.TcpServerProperties;
 import com.nptechon.smartamp.tcp.codec.SmartAmpFrameDecoder;
 import com.nptechon.smartamp.tcp.server.handler.AmpInboundHandler;
+import com.nptechon.smartamp.tcp.server.sender.CommandSender;
 import com.nptechon.smartamp.tcp.server.session.TcpSessionManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -21,6 +22,7 @@ public class NettyTcpServer {
 
     private final TcpServerProperties props;
     private final TcpSessionManager sessionManager;
+    private final CommandSender commandSender;
 
     private EventLoopGroup boss;
     private EventLoopGroup worker;
@@ -44,7 +46,7 @@ public class NettyTcpServer {
                     protected void initChannel(Channel ch) {
                         ChannelPipeline p = ch.pipeline();
                         p.addLast(new SmartAmpFrameDecoder());
-                        p.addLast(new AmpInboundHandler(sessionManager));
+                        p.addLast(new AmpInboundHandler(sessionManager, commandSender));
                     }
                 });
 
